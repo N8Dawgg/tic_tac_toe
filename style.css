@@ -20,7 +20,17 @@ h1 {
     font-weight: 1000;
 }
 
+
+.tic_tac_tile {
+    width: 30%;
+    height: 20%;
+    background: gray;
+    border-radius: 50%;
+}
+
+
 .ui_screen {
+    position: absolute;
     display: flex;
     flex-wrap: wrap;
     width: 40vw;
@@ -71,6 +81,7 @@ h1 {
 }
 .inactive{
     pointer-events: none;
+    opacity: 0%;
 }
 
 
