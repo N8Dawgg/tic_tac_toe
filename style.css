@@ -24,16 +24,35 @@ h1 {
 .tic_tac_tile {
     width: 30%;
     height: 20%;
-    background: gray;
+    position: relative;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    text-align: center;
+    font-size: 36px;
+    font-weight: 1000;
+    background: rgb(190,190,190);
+    box-shadow: 0px 5px 0px rgb(127,127,127);
     border-radius: 50%;
 }
 
+.tic_tac_tile:hover {
+    background: rgb(225,225,225);
+    box-shadow: 0px 5px 0px rgb(190,190,190);
+}
+
+#game_board {
+    gap: 8px;
+    justify-content: center;
+    align-content: center;
+}
 
 .ui_screen {
     position: absolute;
     display: flex;
     flex-wrap: wrap;
-    width: 40vw;
+    width: 648px;
     height: 60vh;
 }
 
@@ -105,4 +124,8 @@ h1 {
         opacity: 100%;
         top: 0px;
     }
+}
+
+#a{
+
 }
