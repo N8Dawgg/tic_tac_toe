@@ -1,0 +1,91 @@
+:root{
+    --primary_color: hotpink;
+}
+
+body {
+    display: flex;
+    align-items: center;
+    flex-direction: column;
+}
+    
+.ui_screen {
+    display: flex;
+    flex-wrap: wrap;
+    width: 40vw;
+    height: 60vh;
+}
+
+
+.ui_button {
+    background: white;
+    border: var(--primary_color);
+    border-radius: 8px;
+    border-style: solid;
+    border-width: 4px;
+    position: relative;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    transition-duration: 0.25s;
+    width: 30%;
+    height: 20%;
+    flex: 1;
+    margin: 5%;
+    font-size: 23px;
+    font-weight:bold;
+}
+
+h1 {
+    width: 100%;
+    text-align: center;
+}
+
+.ui_button:hover {
+    background: var(--primary_color);
+    color: white;
+}
+
+
+.test {
+    background: black;
+    height: 200px;
+    width: 200px;
+    position: relative;
+    animation-name: scroll_up_and_fade_in;
+    animation-duration: 2s;
+    animation-iteration-count: infinite;
+}
+
+.fade_in{
+    animation: scroll_up_and_fade_in 2s ease 0s 1 forwards;
+}
+.fade_out{
+    animation: scroll_up_and_fade_out 2s ease 0s 1 forwards;
+}
+.inactive{
+    pointer-events: none;
+}
+
+
+@keyframes scroll_up_and_fade_out {
+    0%  {
+        opacity: 100%;
+        top: 0;
+    }
+    100% {
+        opacity: 0%;
+        top: -100px;
+    }
+}
+
+@keyframes scroll_up_and_fade_in {
+    0%  {
+        opacity: 0%;
+        top: 100px;
+    }
+    100% {
+        opacity: 100%;
+        top: 0px;
+    }
+}
