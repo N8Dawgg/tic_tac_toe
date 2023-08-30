@@ -91,8 +91,8 @@ function tile_clicked(e) {
 }
 
 function tile_selected(tile) {
-    console.log(tile)
     let id_of_tile = tile.id[1];
+    console.log(id_of_tile);
     if (tile_state[id_of_tile] != 0) {
         return
     }
@@ -117,6 +117,7 @@ function take_ai_turn_after_delay(delay=330) {
 
 function take_ai_turn() {
     let winning_tile_idx = check_for_winning_move('X');
+    console.log(winning_tile_idx)
     if (winning_tile_idx != false) {
         tile_selected(TILE[winning_tile_idx]);
         return;
@@ -177,6 +178,7 @@ function determine_best_move_with_value_matrix(player_char) {
 }
 
 function check_for_winning_move(player_char) {
+    let winning_move = false;
     WINNING_COMBOS.forEach((combo) => {
         let player_char_count = 0;
         let third_tile_idx = -1;
@@ -188,10 +190,10 @@ function check_for_winning_move(player_char) {
             }
         })
         if (player_char_count == 2 && third_tile_idx != -1) {
-            return third_tile_idx;
+            winning_move = third_tile_idx;
         }
     })
-    return false;
+    return winning_move;
 }
 
 
