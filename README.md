@@ -1,1 +1,7 @@
 # tic_tac_toe
+
+This is an assignment I did for the Odin Project. You are able to play a game of tic tac toe with someone else in the room, or play against an AI opponent. The game is relatively functional, and allows you to restart or even go back to the start screen and switch between AI or human opponents again. The UI is fine. I could do better but I feel compelled to hurry as I am currently looking for work, and don't feel like I have the time to spend on making this look nicer.
+
+The thing I'm most proud of is the AI opponent. It is legitimately impossible to beat, and will absolutely crush you if you try to get clever. The algorithm for it is quite simple:
+
+I have a list of winning lines (rows, collumns and the two diagonals). On the AI's turn, it checks to see if it can win, and then will take the winning tile. Then, it checks to see if its opponent can win and blocks the opponent. If neither of these are true, it creates a value matrix. It runs through all of the possible winning lines and adds 1 point to any empty space in a line that has the following characteristics: EITHER it is an empty line, OR the line has only one symbol in it for either team. The tiles are more valuable if they exist in a line that is empty, or if they are in line with on of your pieces, or if they are blocking a line of the opponent. It is quite simple really, and with it always going first, the AI basically forces you down a Tie path every game.

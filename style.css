@@ -126,6 +126,9 @@ h1 {
     }
 }
 
-#a{
-
+#win_bar,#win_comment{
+    position: relative
+}
+#win_bar{
+    display:flex;
 }

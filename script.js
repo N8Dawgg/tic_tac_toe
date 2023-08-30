@@ -20,13 +20,18 @@ function initialize() {
     })
     document.querySelector('#vs_ai').addEventListener('click', start_ai_game);
     document.querySelector('#vs_player').addEventListener('click', start_pvp_game);
+    document.querySelector('#again').addEventListener('click', restart_game);
+    document.querySelector('#back').addEventListener('click', restore_start_screen);
 }
+
 
 initialize();
 
 const ICON_COLOR_LIST = {
     'vs_player': '#FF66CC',
-    'vs_ai': '#66CCFF'
+    'vs_ai': '#66CCFF',
+    'again': '#42ebc9',
+    'back' : '#ffa238'
 }
 
 function button_moused(e) {
@@ -46,14 +51,17 @@ function fade_in_element(element) {
     element.classList.remove('inactive');
 }
 
+const START_SCREEN = document.querySelector('#start_screen')
+
 function start_pvp_game() {
-    fade_out_element(document.querySelector('#start_screen'));
+    fade_out_element(START_SCREEN);
+    reset_board_state();
     setTimeout(start_game , 1000);
-    
 }
 
 function start_ai_game() {
-    fade_out_element(document.querySelector('#start_screen'));
+    fade_out_element(START_SCREEN);
+    reset_board_state();
     ai_player = true;
     setTimeout(start_game , 1000);
 }
@@ -63,20 +71,19 @@ function start_ai_game() {
 let ai_player = false;
 let x_turn = true;
 
-
+const GAME_BOARD = document.querySelector('#game_board')
 
 function start_game() {
-    fade_in_element(document.querySelector('#game_board'));
+    fade_in_element(GAME_BOARD);
     initialize_tic_tac_tiles();
     if (ai_player) {
         take_ai_turn_after_delay(2000);
     }
 }
 
-
+const ALL_TIC_TAC_TILES = document.querySelectorAll('.tic_tac_tile');
 
 function initialize_tic_tac_tiles() {
-    const ALL_TIC_TAC_TILES = document.querySelectorAll('.tic_tac_tile');
     ALL_TIC_TAC_TILES.forEach((tile) => {
         tile.addEventListener('click', tile_clicked)
     });
@@ -106,6 +113,11 @@ function tile_selected(tile) {
     }
     let winner = check_for_winner();
     if (winner) {
+        return;
+    }
+    let tie = check_for_tie();
+    if (tie) {
+        declare_tie();
         return;
     }
     x_turn = !x_turn;
@@ -198,7 +210,12 @@ function check_for_winning_move(player_char) {
     return winning_move;
 }
 
-
+function reset_board_state() {
+    tile_state = [0,0,0,0,0,0,0,0,0];
+    ALL_TIC_TAC_TILES.forEach((tile) => {
+        tile.textContent = '';
+    })
+}
 
 let tile_state = [0,0,0,0,0,0,0,0,0]
 
@@ -232,11 +249,44 @@ function check_for_winner() {
     return winner;
 }
 
+function check_for_tie() {
+    let empty_tile_count = 9;
+    tile_state.forEach((state) => {
+        if (state != 0) {
+            empty_tile_count -= 1;
+        }
+    })
+    return (empty_tile_count == 0);
+}
+
+const WIN_COMMENT = document.querySelector('#win_comment');
+const WIN_BAR = document.querySelector('#win_bar');
+
 function declare_winner(winner) {
-    console.log(winner + ' is the winner!!');
+    WIN_COMMENT.textContent = winner + ' is the winner!!'
+    fade_in_element(WIN_BAR);
+}
+
+function declare_tie() {
+    WIN_COMMENT.textContent = 'Tie!!'
+    fade_in_element(WIN_BAR);
 }
 
 
 
+function restart_game() {
+    reset_board_state();
+    fade_out_element(WIN_BAR);
+    x_turn = true;
+    if (ai_player) {
+        take_ai_turn_after_delay(1000);
+    }
+}
 
+
+function restore_start_screen() {
+    fade_out_element(GAME_BOARD);
+    fade_out_element(WIN_BAR);
+    fade_in_element(START_SCREEN);
+}
 
