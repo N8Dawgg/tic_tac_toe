@@ -1,5 +1,15 @@
 const CSS_ROOT = document.querySelector(':root');
-
+let TILE = [
+    document.querySelector('#t0'),
+    document.querySelector('#t1'),
+    document.querySelector('#t2'),
+    document.querySelector('#t3'),
+    document.querySelector('#t4'),
+    document.querySelector('#t5'),
+    document.querySelector('#t6'),
+    document.querySelector('#t7'),
+    document.querySelector('#t8')
+];
 
 
 function initialize() {
@@ -59,11 +69,11 @@ function start_game() {
     fade_in_element(document.querySelector('#game_board'));
     initialize_tic_tac_tiles();
     if (ai_player) {
-        take_ai_turn()
+        take_ai_turn(2000);
     }
 }
 
-let tile_state = [0,0,0,0,0,0,0,0,0]
+
 
 function initialize_tic_tac_tiles() {
     const ALL_TIC_TAC_TILES = document.querySelectorAll('.tic_tac_tile');
@@ -73,15 +83,16 @@ function initialize_tic_tac_tiles() {
 }
 
 function tile_clicked(e) {
-    if (ai_player && !x_turn) {
-        tile_selected(e.target);
-    }
     
+    if (ai_player && x_turn) {
+        return;
+    }
+    tile_selected(e.target);
 }
 
 function tile_selected(tile) {
-    console.log(tile.id);
-    let id_of_tile = tile.id;
+    console.log(tile)
+    let id_of_tile = tile.id[1];
     if (tile_state[id_of_tile] != 0) {
         return
     }
@@ -89,8 +100,6 @@ function tile_selected(tile) {
         tile_state[id_of_tile] = 'X';
         tile.textContent = 'X';
         tile.style.color = '#FF00FF'
-    } else if (ai_player){
-        //nothing...
     } else {
         tile_state[id_of_tile] = 'O';
         tile.textContent = 'O';
@@ -102,28 +111,79 @@ function tile_selected(tile) {
     }
 }
 
-function take_ai_turn() {
-    setTimeout(take_ai_turn_after_delay , .333);
+function take_ai_turn(delay=330) {
+    setTimeout(take_ai_turn_after_delay, delay);
 }
-
-
-
-
 
 function take_ai_turn_after_delay() {
-    if (TILE[4] == 0) {
-        tile_selected(TILE[4]);
+    let winning_tile_idx = check_for_winning_move('X');
+    if (winning_tile_idx != false) {
+        tile_selected(TILE[winning_tile_idx])
     }
+    let opponent_winning_tile_idx = check_for_winning_move('O');
+    if (opponent_winning_tile_idx != false) {
+        tile_selected(TILE[opponent_winning_tile_idx])
+    }
+    if (tile_state[4] == 0) {
+        tile_selected(TILE[4]);
+    } else if (true) {}
 }
 
-let TILE = [
-    document.querySelector('#t0'),
-    document.querySelector('#t1'),
-    document.querySelector('#t2'),
-    document.querySelector('#t3'),
-    document.querySelector('#t4'),
-    document.querySelector('#t5'),
-    document.querySelector('#t6'),
-    document.querySelector('#t7'),
-    document.querySelector('#t8')
-];
+function check_for_winning_move(player_char) {
+    WINNING_COMBOS.forEach((combo) => {
+        let player_char_count = 0;
+        let third_tile_idx = -1;
+        combo.forEach((tile_idx) => {
+            if (tile_state[tile_idx] == player_char) {
+                player_char_count += 1;
+            } else if (tile_state[tile_idx] == 0) {
+                third_tile_idx = tile_idx;
+            }
+        })
+        if (player_char_count == 2 && third_tile_idx != -1) {
+            return third_tile_idx;
+        }
+    })
+    return false;
+}
+
+
+
+let tile_state = [0,0,0,0,0,0,0,0,0]
+
+
+const WINNING_COMBOS = [
+    [0,1,2], [3,4,5], [6,7,8],
+    [0,3,6], [1,4,7], [2,3,6],
+    [0,4,8], [2,4,6]
+]
+
+function check_for_winner() {
+    WINNING_COMBOS.forEach((combo) => {
+        let X_count = 0;
+        let O_count = 0;
+        combo.forEach((tile_idx) => {
+            if (tile_state[tile_idx] == 'X') {
+                X_count += 1;
+            } else if (tile_state[tile_idx] == 'O') {
+                O_count += 1;
+            }
+        })
+        if (X_count >= 3) {
+            declare_winner('X');
+            return;
+        } else if (O_count >= 3) {
+            declare_winner('O');
+            return;
+        }
+    })
+}
+
+function declare_winner(winner) {
+    console.log(winner + ' is the winner!!');
+}
+
+
+
+
+
