@@ -92,7 +92,6 @@ function tile_clicked(e) {
 
 function tile_selected(tile) {
     let id_of_tile = tile.id[1];
-    console.log(id_of_tile);
     if (tile_state[id_of_tile] != 0) {
         return
     }
@@ -104,6 +103,10 @@ function tile_selected(tile) {
         tile_state[id_of_tile] = 'O';
         tile.textContent = 'O';
         tile.style.color = '#00FFFF'
+    }
+    let winner = check_for_winner();
+    if (winner) {
+        return;
     }
     x_turn = !x_turn;
     if (x_turn && ai_player) {
@@ -117,7 +120,6 @@ function take_ai_turn_after_delay(delay=330) {
 
 function take_ai_turn() {
     let winning_tile_idx = check_for_winning_move('X');
-    console.log(winning_tile_idx)
     if (winning_tile_idx != false) {
         tile_selected(TILE[winning_tile_idx]);
         return;
@@ -208,6 +210,7 @@ const WINNING_COMBOS = [
 ]
 
 function check_for_winner() {
+    let winner = false;
     WINNING_COMBOS.forEach((combo) => {
         let X_count = 0;
         let O_count = 0;
@@ -218,14 +221,15 @@ function check_for_winner() {
                 O_count += 1;
             }
         })
-        if (X_count >= 3) {
+        if (X_count == 3) {
             declare_winner('X');
-            return;
-        } else if (O_count >= 3) {
+            winner = true;
+        } else if (O_count == 3) {
             declare_winner('O');
-            return;
+            winner = true;
         }
     })
+    return winner;
 }
 
 function declare_winner(winner) {
