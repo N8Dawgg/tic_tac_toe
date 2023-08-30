@@ -69,7 +69,7 @@ function start_game() {
     fade_in_element(document.querySelector('#game_board'));
     initialize_tic_tac_tiles();
     if (ai_player) {
-        take_ai_turn(2000);
+        take_ai_turn_after_delay(2000);
     }
 }
 
@@ -107,26 +107,73 @@ function tile_selected(tile) {
     }
     x_turn = !x_turn;
     if (x_turn && ai_player) {
-        take_ai_turn();
+        take_ai_turn_after_delay();
     }
 }
 
-function take_ai_turn(delay=330) {
-    setTimeout(take_ai_turn_after_delay, delay);
+function take_ai_turn_after_delay(delay=330) {
+    setTimeout(take_ai_turn, delay);
 }
 
-function take_ai_turn_after_delay() {
+function take_ai_turn() {
     let winning_tile_idx = check_for_winning_move('X');
     if (winning_tile_idx != false) {
-        tile_selected(TILE[winning_tile_idx])
+        tile_selected(TILE[winning_tile_idx]);
+        return;
     }
     let opponent_winning_tile_idx = check_for_winning_move('O');
     if (opponent_winning_tile_idx != false) {
-        tile_selected(TILE[opponent_winning_tile_idx])
+        tile_selected(TILE[opponent_winning_tile_idx]);
+        return;
     }
     if (tile_state[4] == 0) {
         tile_selected(TILE[4]);
-    } else if (true) {}
+    } else {
+        let best_move_idx = determine_best_move_with_value_matrix('X');
+        tile_selected(TILE[best_move_idx]);
+    }
+}
+
+function determine_best_move_with_value_matrix(player_char) {
+    let value_matrix = [0,0,0,0,0,0,0,0,0];
+
+    WINNING_COMBOS.forEach((combo) => {
+        let player_char_count = 0;
+        let enemy_char_count = 0;
+        let empty_tile_list = [];
+        combo.forEach((tile_idx) => {
+            if (tile_state[tile_idx] == 0) {
+                empty_tile_list.push(tile_idx);
+            } else if (tile_state[tile_idx] == player_char) {
+                player_char_count += 1;
+                value_matrix[tile_idx] -= 1;
+            } else {
+                enemy_char_count += 1;
+                value_matrix[tile_idx] -= 1;
+            }
+        })
+        //if the line is empty, add 1 point to each of the tiles in the matrix.
+        //if the line is not conflicting, meaning both players aren't in it, add 1 point to each empty tile in the matrix.
+        if (empty_tile_list.length >= 3 || (player_char_count ^ enemy_char_count)) {
+            empty_tile_list.forEach((tile_idx) => {
+                value_matrix[tile_idx] += 1;
+            })
+        }
+    })
+    //step through each tle in the matrix and make a list of the highest tiles.
+    //then, return one of them at random.
+    let highest_value = 0;
+    let highest_tile_idx_list = [];
+    value_matrix.forEach((tile_value, tile_idx) => {
+        if (tile_value == highest_value) {
+            highest_tile_idx_list.push(tile_idx);
+        } else if (tile_value > highest_value) {
+            highest_value = tile_value;
+            highest_tile_idx_list = [tile_idx];
+        }
+    })
+    let rand_idx = Math.floor(Math.random() * highest_tile_idx_list.length);
+    return highest_tile_idx_list[rand_idx];
 }
 
 function check_for_winning_move(player_char) {
